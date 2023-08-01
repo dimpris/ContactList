@@ -9,8 +9,8 @@
     <p>The time is @DateTime.Now</p>
     <p>
         <%
-response.write("My first ASP script!")
-%>
+        response.write("My first ASP script!")
+        %>
     </p>
 </body>
 </html>
