@@ -4,6 +4,7 @@ using ContactList.DataContexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ContactList.Migrations
 {
     [DbContext(typeof(ContactListAppContext))]
-    partial class ContactListAppContextModelSnapshot : ModelSnapshot
+    [Migration("20230801154723_Changed_models")]
+    partial class Changed_models
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -152,14 +155,14 @@ namespace ContactList.Migrations
                         new
                         {
                             Id = 1,
-                            CreatedAt = new DateTime(2023, 8, 1, 19, 53, 1, 389, DateTimeKind.Local).AddTicks(2879),
+                            CreatedAt = new DateTime(2023, 8, 1, 18, 47, 23, 361, DateTimeKind.Local).AddTicks(3687),
                             Email = "john.doe@example.com",
                             Fullname = "John Doe",
                             Login = "john_doe",
-                            PasswordHash = "$2a$16$.2Hhf9fcMwf64L.0Xmnwb.Y2QORtgML/.DVCSQUPWSnz1h1JA1eqy",
-                            PasswordHashSalt = "$2a$16$.2Hhf9fcMwf64L.0Xmnwb.",
+                            PasswordHash = "$2a$16$g5SOGxCee8G5xTPKzWpgQ.QqAq6iHzXUwyKoGCvY3dyErjqbUNjpu",
+                            PasswordHashSalt = "$2a$16$g5SOGxCee8G5xTPKzWpgQ.",
                             RoleId = 2,
-                            VerifiedAt = new DateTime(2023, 8, 1, 19, 53, 1, 389, DateTimeKind.Local).AddTicks(2938)
+                            VerifiedAt = new DateTime(2023, 8, 1, 18, 47, 23, 361, DateTimeKind.Local).AddTicks(3759)
                         });
                 });
 
