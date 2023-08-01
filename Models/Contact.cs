@@ -5,7 +5,8 @@
         public int Id { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
-        public User Owner { get; set; }
-        public List<Phone> Phones { get; set;}
+        public int OwnerId { get; set; }
+        public User? Owner { get; set; }
+        public virtual List<Phone>? Phones { get; set;}
     }
 }
