@@ -1,4 +1,11 @@
+using ContactList.DataContexts;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+// Add DB connection
+string connection = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDbContext<ContactListAppContext>(options => options.UseSqlServer(connection));
 
 // Add services to the container.
 
