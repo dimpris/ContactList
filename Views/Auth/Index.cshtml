@@ -1,0 +1,9 @@
+﻿@model IEnumerable<ContactList.Models.Role>
+<h1>Auth/Index</h1>
+<dl>
+    @foreach (var r in Model)
+    {
+        <dt>@r.Id</dt>
+        <dd>@r.Name</dd>
+    }
+</dl>

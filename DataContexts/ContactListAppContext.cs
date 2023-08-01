@@ -1,4 +1,5 @@
-﻿using ContactList.Models;
+﻿using ContactList.DataServices;
+using ContactList.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace ContactList.DataContexts
@@ -17,21 +18,20 @@ namespace ContactList.DataContexts
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Login)
+                .IsUnique();
+
             Role adminRole = new Role { Id = 1, Name = "administrator" };
             Role userRole = new Role { Id = 2, Name = "user" };
             modelBuilder.Entity<Role>().HasData(adminRole, userRole);
-            modelBuilder.Entity<User>().HasData(
-                    new User 
-                    { 
-                        Id = 1, 
-                        Fullname = "John Doe", 
-                        Login = "john_doe", 
-                        PasswordHash = "john_doe", 
-                        Email = "john.doe@example.com",
-                        RoleId = 2,
-                        VerifiedAt = DateTime.UtcNow,
-                    }
-            );
+
+            var u = UserService.Create("john_doe", "john_doe", "John Doe", "john.doe@example.com");
+            u.Id = 1;
+            u.VerifiedAt = DateTime.Now;
+            u.RoleId = userRole.Id;
+            
+            modelBuilder.Entity<User>().HasData(u);
         }
     }
 }

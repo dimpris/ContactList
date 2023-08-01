@@ -1,0 +1,29 @@
+html {
+  font-size: 14px;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin-bottom: 60px;
+}
+
+
+.products21 h1 {
+    font-size: 2em;
+}
+.products21 span {
+    font-size: 1em;
+}
+.products21 span.well {
+    font-size: 0.8em;
+}
