@@ -1,4 +1,5 @@
 using ContactList.DataContexts;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -6,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add DB connection
 string connection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ContactListAppContext>(options => options.UseSqlServer(connection));
+builder.Services.AddMvc(opt => opt.EnableEndpointRouting = false);
 
 // Add services to the container.
 
@@ -26,6 +28,14 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+
+app.UseMvc(routes =>
+{
+    routes.MapRoute(
+        name: "default",
+        template: "{controller=Home}/{action=Index}/{id?}");
+});
 
 app.MapControllers();
 
