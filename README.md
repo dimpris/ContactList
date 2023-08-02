@@ -5,9 +5,10 @@ Application that helps managing user contacts. Solution includes ASP.NET Core (b
 ## Steps left
 
 
-- TODO. Implement contact phone numbers edit. **1**
+- TODO. Finish with phone numbers edit. **1**
 - TODO. Implement contacts search. **2**
 - TODO. Add contacts validation and form masks. **2**
 - TODO. Implement password reset. **3**
 - TODO. Add CSRF security for login forms. **3**
-- TODO. Cover with tests. **4**
+- TODO. Deploy on Azure or AWS. **4**
+- TODO. Cover with tests. **5**
