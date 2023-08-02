@@ -27,3 +27,8 @@ body {
 .products21 span.well {
     font-size: 0.8em;
 }
+
+.phone-numbers-editor.container .row .viewer { display: block !important; }
+.phone-numbers-editor.container .row.edit .viewer { display: none !important; }
+.phone-numbers-editor.container .row .editor { display: none !important; }
+.phone-numbers-editor.container .row.edit .editor { display: block !important; }

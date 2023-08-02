@@ -8,7 +8,7 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Contact</h4>
+    <h4 class="mt-4">Contact</h4>
     <hr />
     <dl class="row">
         <dt class = "col-sm-2">
@@ -24,6 +24,20 @@
             @Html.DisplayFor(model => model.Email)
         </dd>
     </dl>
+    <h4 class="mt-4">Phone numbers</h4>
+    <hr />
+    @foreach (var p in Model.Phones)
+    {
+        <div class="row">
+            <div class="col-2">
+                <a href="tel:@p.Number">@p.Number</a>
+            </div>
+            <div class="col-2">
+                <span class="badge bg-primary">@p.Type</span>
+            </div>
+        </div>
+    }
+    <hr />
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |

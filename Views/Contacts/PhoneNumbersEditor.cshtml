@@ -1,0 +1,87 @@
+﻿@model ContactList.Models.Contact
+@{
+    int numbersCount = 0;
+    if (Model != null && Model.Phones != null)
+    {
+        numbersCount = Model.Phones.Count;
+    }
+}
+
+<div class="phone-numbers-editor container">
+
+    <div class="row d-none" id="phone-number-template">
+        <div class="col-2 editor">
+            Type:
+        </div>
+        <div class="col-4 editor">
+            <select name="phone_type[]" class="form-select">
+                <option selected value="0">Mobile</option>
+                <option value="1">Work</option>
+                <option value="2">Home</option>
+                <option value="3">Other</option>
+            </select>
+        </div>
+        <div class="col-5 editor">
+            <input type="text" name="phone_number[]" placeholder="Phone number" />
+        </div>
+        <div class="col-1 editor">
+            <button type="button" class="btn btn-secondary btn-sm remove-phone-number-btn">
+                <i class="bi bi-x-circle"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="phone-numbers-editor" data-phones-count="@numbersCount">
+        @if (Model != null && Model.Phones != null)
+        {
+            @foreach(var p in Model.Phones)
+            {
+                <div class="row" id="phone-number-template">
+                    <div class="col-2 editor">
+                        Type:
+                    </div>
+                    <div class="col-4 editor">
+                        <select name="phone_type_editor" class="form-select">
+                            <option value="0">Mobile</option>
+                            <option value="1">Work</option>
+                            <option value="2">Home</option>
+                            <option value="3">Other</option>
+                        </select>
+                    </div>
+                    <div class="col-5 editor">
+                        <input type="text" name="phone_number_editor" value="@p.Number" placeholder="Phone number" />
+                    </div>
+                    <div class="col-1 editor">
+                        <button type="button" class="btn btn-secondary btn-sm save-phone-number-btn" data-id="@p.Id">
+                            <i class="bi bi-save"></i>
+                        </button>
+                    </div>
+
+                    <div class="col-6 viewer">
+                        <a href="tel:@p.Number">@p.Number</a>
+                    </div>
+                    <div class="col-3 viewer">
+                        <span class="badge bg-primary">@p.Type</span>
+                    </div>
+                    <div class="col-3 viewer">
+                        <button type="button" class="btn btn-secondary btn-sm edit-phone-number-btn" data-type="@((int)p.Type)">
+                            <i class="bi bi-pencil-square"></i>
+                        </button>
+                        <button type="button" class="btn btn-secondary btn-sm delete-phone-number-btn">
+                            <i class="bi bi-x-circle"></i>
+                        </button>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+
+    <div class="row m-4">
+        <button id="add-phone-number-btn" type="button" class="btn btn-success">
+            <i class="bi bi-person-plus"></i>
+            Add number
+        </button>
+    </div>
+
+</div>

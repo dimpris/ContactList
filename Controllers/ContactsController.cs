@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using ContactList.DataContexts;
+﻿using ContactList.DataContexts;
 using ContactList.Models;
+using ContactList.Models.Request;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ContactList.Controllers
 {
@@ -23,7 +19,7 @@ namespace ContactList.Controllers
         public async Task<IActionResult> Index()
         {
             return _context.Contacts != null ? 
-                          View(await _context.Contacts.ToListAsync()) :
+                          View(await _context.Contacts.Include(c => c.Phones).ToListAsync()) :
                           Problem("Entity set 'ContactListAppContext.Contacts'  is null.");
         }
 
@@ -36,6 +32,7 @@ namespace ContactList.Controllers
             }
 
             var contact = await _context.Contacts
+                .Include(c => c.Phones)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (contact == null)
             {
@@ -56,10 +53,29 @@ namespace ContactList.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Email")] Contact contact)
+        public async Task<IActionResult> Create(CreateContactRequest req)
         {
+            Contact contact = new Contact();
+            contact.Name = req.Name;
+            contact.Email = req.Email;
+            
             contact.OwnerId = 1;
             contact.Phones = new List<Phone>();
+
+            // TODO Refactor
+            if (req.phone_number != null && req.phone_type != null)
+            {
+                for (int i = 1; i < req.phone_number.Length; i++)
+                {
+                    var phone = new Phone()
+                    {
+                        Number = req.phone_number[i],
+                        Type = (PhoneType) Enum.Parse(typeof(PhoneType), req.phone_type[i])
+                    };
+
+                    contact.Phones.Add(phone);
+                }
+            }
 
             if (ModelState.IsValid)
             {
@@ -78,7 +94,7 @@ namespace ContactList.Controllers
                 return NotFound();
             }
 
-            var contact = await _context.Contacts.FindAsync(id);
+            var contact = await _context.Contacts.Include(c => c.Phones).FirstOrDefaultAsync(c => c.Id == id);
             if (contact == null)
             {
                 return NotFound();
