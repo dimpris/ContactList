@@ -13,7 +13,12 @@ namespace ContactList.DataContexts
         public ContactListAppContext(DbContextOptions<ContactListAppContext> options)
             : base(options)
         {
-            Database.EnsureCreated();
+            // Database.EnsureCreated(); // Not needed. Database structure managed by migrations
+        }
+        
+        public IQueryable<Contact> UserContacts(int userId)
+        {
+            return Contacts.Where(c => c.OwnerId == userId);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

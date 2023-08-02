@@ -1,12 +1,17 @@
-﻿using ContactList.DataContexts;
+﻿using ContactList.Common;
+using ContactList.DataContexts;
+using ContactList.DataServices;
 using ContactList.Models;
 using ContactList.Models.Request;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace ContactList.Controllers
 {
-    public class ContactsController : Controller
+    [Authorize]
+    public class ContactsController : BaseContactListController
     {
         private readonly ContactListAppContext _context;
 
@@ -18,28 +23,26 @@ namespace ContactList.Controllers
         // GET: Contacts
         public async Task<IActionResult> Index()
         {
-            return _context.Contacts != null ? 
-                          View(await _context.Contacts.Include(c => c.Phones).ToListAsync()) :
-                          Problem("Entity set 'ContactListAppContext.Contacts'  is null.");
+            try
+            {
+                var cs = new ContactsService(_context, GetCurrentUserId());
+
+                return View(await cs.List());
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound();
+            }
+            catch (Exception ex) 
+            {
+                return Problem(ex.Message);
+            }
         }
 
         // GET: Contacts/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Contacts == null)
-            {
-                return NotFound();
-            }
-
-            var contact = await _context.Contacts
-                .Include(c => c.Phones)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (contact == null)
-            {
-                return NotFound();
-            }
-
-            return View(contact);
+            return await GetContact(id);
         }
 
         // GET: Contacts/Create
@@ -55,51 +58,30 @@ namespace ContactList.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateContactRequest req)
         {
-            Contact contact = new Contact();
-            contact.Name = req.Name;
-            contact.Email = req.Email;
-            
-            contact.OwnerId = 1;
-            contact.Phones = new List<Phone>();
-
-            // TODO Refactor
-            if (req.phone_number != null && req.phone_type != null)
+            try
             {
-                for (int i = 1; i < req.phone_number.Length; i++)
+                Contact contact = new Contact();
+                var cs = new ContactsService(_context, GetCurrentUserId());
+
+                if (ModelState.IsValid)
                 {
-                    var phone = new Phone()
-                    {
-                        Number = req.phone_number[i],
-                        Type = (PhoneType) Enum.Parse(typeof(PhoneType), req.phone_type[i])
-                    };
+                    contact = await cs.CreateAndSave(req);
 
-                    contact.Phones.Add(phone);
+                    return RedirectToAction(nameof(Index));
                 }
-            }
 
-            if (ModelState.IsValid)
-            {
-                _context.Add(contact);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View(contact);
             }
-            return View(contact);
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
         // GET: Contacts/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.Contacts == null)
-            {
-                return NotFound();
-            }
-
-            var contact = await _context.Contacts.Include(c => c.Phones).FirstOrDefaultAsync(c => c.Id == id);
-            if (contact == null)
-            {
-                return NotFound();
-            }
-            return View(contact);
+            return await GetContact(id);
         }
 
         // POST: Contacts/Edit/5
@@ -140,19 +122,7 @@ namespace ContactList.Controllers
         // GET: Contacts/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.Contacts == null)
-            {
-                return NotFound();
-            }
-
-            var contact = await _context.Contacts
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (contact == null)
-            {
-                return NotFound();
-            }
-
-            return View(contact);
+            return await GetContact(id);
         }
 
         // POST: Contacts/Delete/5
@@ -160,23 +130,44 @@ namespace ContactList.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.Contacts == null)
+            try
             {
-                return Problem("Entity set 'ContactListAppContext.Contacts'  is null.");
+                var cs = new ContactsService(_context, GetCurrentUserId());
+                await cs.Remove(id);
+
+                return RedirectToAction(nameof(Index));
             }
-            var contact = await _context.Contacts.FindAsync(id);
-            if (contact != null)
+            catch (NotFoundException ex)
             {
-                _context.Contacts.Remove(contact);
+                return NotFound();
             }
-            
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
         private bool ContactExists(int id)
         {
           return (_context.Contacts?.Any(e => e.Id == id)).GetValueOrDefault();
+        }
+
+        private async Task<IActionResult> GetContact(int? id)
+        {
+            try
+            {
+                var cs = new ContactsService(_context, GetCurrentUserId());
+
+                return View(await cs.Details(id));
+            }
+            catch (NotFoundException ex)
+            {
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
     }
 }

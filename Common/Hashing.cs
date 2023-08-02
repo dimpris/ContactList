@@ -8,22 +8,16 @@ namespace ContactList.Common
     {
         public static bool VerifyUserAndPasswordHash(User user, string password) 
         {
-            // TODO Move this checking from here
-            if (user == null)
-            {
-                throw new Exception("User not found");
-            }
-            
-            if (user.IsActive == false)
-            {
-                throw new Exception("User not active");
-            }
-
             string passHash = HashPassword(password, user.PasswordHashSalt);
 
-            //BCrypt.Net.BCrypt.Verify();
+            bool passwordValid = user.PasswordHash == passHash;
 
-            return user.PasswordHash == passHash;
+            if (!passwordValid)
+            {
+               throw new InvalidCredentialsException();
+            }
+
+            return passwordValid;
         }
         public static string HashPassword(PasswordHashData passwordData)
         { 
@@ -37,13 +31,6 @@ namespace ContactList.Common
         public static string GenerateSalt(int saltLengthInBytes = 16)
         {
             return BCrypt.Net.BCrypt.GenerateSalt(saltLengthInBytes);
-
-            //byte[] salt = new byte[saltLengthInBytes];
-            //using (var rngCryptoServiceProvider = new RNGCryptoServiceProvider())
-            //{
-            //    rngCryptoServiceProvider.GetBytes(salt);
-            //}
-            //return BitConverter.ToString(salt).Replace("-", "").ToLower();
         }
     }
 }

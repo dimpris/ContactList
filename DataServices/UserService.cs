@@ -12,6 +12,20 @@ namespace ContactList.DataServices
         {
             _data = context;
         }
+        public User CreateAndAdd(string login, string password, string fullname, string email, string role = "user")
+        {
+            var u = Create(login, password, fullname, email);
+            
+            var roleService = new RoleService(_data);
+            int roleId = roleService.GetRoleIdByName(role);
+
+            u.VerifiedAt = DateTime.Now;
+            u.RoleId = roleId;
+
+            Add(u);
+
+            return u;
+        }
         public static User Create(string login, string password, string fullname, string email)
         {
             PasswordHashData pass = new PasswordHashData(password);

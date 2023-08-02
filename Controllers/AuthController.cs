@@ -5,19 +5,15 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace ContactList.Controllers
 {
-    public class AuthController : Controller
+    public class AuthController : BaseContactListController
     {
         private readonly ContactListAppContext _data;
+        private readonly AuthenticationManager authManager;
 
-        public AuthController(ContactListAppContext context)
+        public AuthController(ContactListAppContext context, IConfiguration appConfig)
         {
             _data = context;
-        }
-
-        public IActionResult Index()
-        {
-            var roles = _data.Roles.ToList();
-            return View(roles);
+            authManager = new AuthenticationManager(this, _data, appConfig);
         }
 
         public IActionResult Login()
@@ -26,21 +22,54 @@ namespace ContactList.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login(LoginRequest req)
+        public async Task<IActionResult> Login(LoginRequest req)
         {
-            var user = _data.Users.FirstOrDefault(u => u.Login == req.Login);
+            try
+            {
+                var token = authManager.SignIn(req.Login, req.Password);
 
-            return View();
+                return Redirect("/Contacts");
+
+            }
+            catch (InvalidCredentialsException ex)
+            {
+                return Problem("Wrong credentials");
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
-        public IActionResult ChangePassword()
+        public IActionResult SignUp()
         {
             return View();
+        }
+        [HttpPost]
+        public IActionResult SignUp(SignUpRequest req)
+        {
+            try
+            {
+
+                var u = authManager.SignUp(req);
+                var token = authManager.SignIn(u, req.Password);
+
+                return Redirect("/Contacts");
+
+            }
+            catch (InvalidCredentialsException ex)
+            {
+                return Problem("Passwords doesn't match");
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
         public IActionResult SignOut()
         {
-            // TODO implement Sign Out
+            authManager.SignOut();
             return RedirectToAction("Login");
         }
     }
