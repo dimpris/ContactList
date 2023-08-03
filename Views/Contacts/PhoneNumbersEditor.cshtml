@@ -14,7 +14,7 @@
             Type:
         </div>
         <div class="col-4 editor">
-            <select name="phone_type[]" class="form-select">
+            <select name="phone_type[]" class="form-select  form-select-sm">
                 <option selected value="0">Mobile</option>
                 <option value="1">Work</option>
                 <option value="2">Home</option>
@@ -41,7 +41,7 @@
                         Type:
                     </div>
                     <div class="col-4 editor">
-                        <select name="phone_type_editor" class="form-select">
+                        <select name="phone_type_editor" class="form-select  form-select-sm">
                             <option value="0">Mobile</option>
                             <option value="1">Work</option>
                             <option value="2">Home</option>
@@ -57,17 +57,19 @@
                         </button>
                     </div>
 
-                    <div class="col-6 viewer">
+                    <div class="col-6 viewer phone_number_view">
                         <a href="tel:@p.Number">@p.Number</a>
                     </div>
                     <div class="col-3 viewer">
-                        <span class="badge bg-primary">@p.Type</span>
+                        <span class="badge bg-primary phone_type_view">@p.Type</span>
                     </div>
-                    <div class="col-3 viewer">
+                    <div class="col-1 offset-1 viewer">
                         <button type="button" class="btn btn-secondary btn-sm edit-phone-number-btn" data-type="@((int)p.Type)">
                             <i class="bi bi-pencil-square"></i>
                         </button>
-                        <button type="button" class="btn btn-secondary btn-sm delete-phone-number-btn">
+                    </div>
+                    <div class="col-1 viewer">
+                        <button type="button" class="btn btn-secondary btn-sm delete-phone-number-btn" data-id="@p.Id">
                             <i class="bi bi-x-circle"></i>
                         </button>
                     </div>
@@ -78,7 +80,7 @@
 
 
     <div class="row m-4">
-        <button id="add-phone-number-btn" type="button" class="btn btn-success">
+        <button id="add-phone-number-btn" type="button" class="btn btn-dark  btn-sm">
             <i class="bi bi-person-plus"></i>
             Add number
         </button>

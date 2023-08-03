@@ -1,4 +1,4 @@
-﻿using ContactList.Common;
+﻿using ContactList.Common.Contracts;
 using ContactList.DataContexts;
 using ContactList.DataServices;
 using ContactList.Models;
@@ -56,7 +56,7 @@ namespace ContactList.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CreateContactRequest req)
+        public async Task<IActionResult> Create(ContactRequest req)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace ContactList.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    contact = await cs.CreateAndSave(req);
+                    contact = cs.Create(req);
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -89,34 +89,26 @@ namespace ContactList.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Email")] Contact contact)
+        public async Task<IActionResult> Edit(int id, ContactRequest req)
         {
-            if (id != contact.Id)
+            try
             {
-                return NotFound();
-            }
+                var cs = new ContactsService(_context, GetCurrentUserId());
+                var contact = await cs.Details(id);
 
-            if (ModelState.IsValid)
-            {
-                try
+                if (ModelState.IsValid)
                 {
-                    _context.Update(contact);
-                    await _context.SaveChangesAsync();
+                    contact = await cs.Edit(id, contact, req);
+
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ContactExists(contact.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+
+                return View(contact);
             }
-            return View(contact);
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
         }
 
         // GET: Contacts/Delete/5

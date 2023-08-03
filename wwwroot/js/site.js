@@ -20,8 +20,35 @@ function initPhoneNumbersEditor() {
         });
 
         $('#phone-numbers-editor').on('click', '.save-phone-number-btn', function () {
-            // TODO implement AJAX saving
-            $(this).closest('.row').removeClass('edit');
+            const el = $(this);
+            const id = el.data('id');
+            const row = el.closest('.row');
+            const phone_number_editor = row.find("input[name=phone_number_editor]");
+            const phone_type_editor = row.find("select[name=phone_type_editor]");
+
+            const number = phone_number_editor.val();
+            const type = phone_type_editor.val();
+
+
+            const phone_number_view = row.find(".phone_number_view a");
+            const phone_type_view = row.find(".phone_type_view");
+            phone_number_view.attr('href', 'tel:' + number).text(number);
+            const type_text = phone_type_editor.find(`option[value=${type}]`).text();
+            phone_type_view.text(type_text);
+            phone_number_editor.prop('disabled', true);
+            phone_type_editor.prop('disabled', true);
+            const editData = {
+                Number: number,
+                Type: parseInt(type)
+            };
+
+            apiPost("/api/ContactList/EditPhone/" + id, editData, res => {
+                if (res == true) {
+                    row.removeClass('edit');
+                    phone_number_editor.prop('disabled', false);
+                    phone_type_editor.prop('disabled', false);
+                }
+            });
         });
 
         $('#phone-numbers-editor').on('click', '.edit-phone-number-btn', function () {
@@ -33,8 +60,11 @@ function initPhoneNumbersEditor() {
         });
 
         $('#phone-numbers-editor').on('click', '.delete-phone-number-btn', function () {
-            // TODO implement AJAX delete
-            $(this).closest('.row').remove();
+            const el = $(this);
+            const id = el.data('id');
+            apiPost("/api/ContactList/DeletePhone/" + id, {}, res => {
+                $(this).closest('.row').remove();
+            });
         });
 
         addBtn.on('click', (ev) => {
@@ -52,4 +82,41 @@ function addPhoneNumberRow() {
         rowClone.removeClass('d-none').addClass('edit');
         editor.append(rowClone);
     }
+}
+
+function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(';').shift();
+}
+function apiQuery(url, method, onDone, data = null) {
+    const token = getCookie("access_token") || "";
+    var settings = {
+        "url": url,
+        "method": method,
+        dataType: "json",
+        "timeout": 0,
+        "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer " + token
+        },
+    };
+
+    if (data) {
+        settings.data = JSON.stringify(data);
+    }
+
+    $.ajax(settings).done(function (response) {
+        if (onDone && typeof onDone == 'function') {
+            onDone(response);
+        }
+    });
+}
+
+function apiGet(url, onDone) {
+    apiQuery(url, "GET", onDone);
+}
+
+function apiPost(url, data, onDone) {
+    apiQuery(url, "POST", onDone, data);
 }

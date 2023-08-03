@@ -1,4 +1,5 @@
 ﻿using ContactList.Common;
+using ContactList.Common.Contracts;
 using ContactList.DataContexts;
 using ContactList.DataServices;
 using ContactList.Models;
@@ -33,7 +34,7 @@ namespace ContactList.Controllers.API
             {
                 var cs = new ContactsService(_context, GetCurrentUserId());
 
-                return await cs.ListSelection();
+                return await cs.ApiList();
             }
             catch (NotFoundException ex)
             {
@@ -54,7 +55,7 @@ namespace ContactList.Controllers.API
             {
                 var cs = new ContactsService(_context, GetCurrentUserId());
 
-                var contact = await cs.DetailsSelection(id);
+                var contact = await cs.ApiDetails(id);
                 return contact;
             }
             catch (NotFoundException ex)
@@ -81,6 +82,44 @@ namespace ContactList.Controllers.API
             catch (InvalidCredentialsException ex)
             {
                 return Problem("Wrong credentials");
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("DeletePhone/{id}")]
+        public async Task<object> DeletePhone(int? id)
+        {
+            try
+            {
+                var cc = new ContactsService(_context, GetCurrentUserId());
+                await cc.DeletePhone(id);
+
+                return true;
+
+            }
+            catch (Exception ex)
+            {
+                return Problem(ex.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("EditPhone/{id}")]
+        public async Task<object> EditPhone(int? id, EditPhoneRequest req)
+        {
+            try
+            {
+                var cc = new ContactsService(_context, GetCurrentUserId());
+                await cc.EditPhone(id, req);
+
+                return true;
+
             }
             catch (Exception ex)
             {

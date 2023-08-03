@@ -1,4 +1,4 @@
-﻿using ContactList.Common;
+﻿using ContactList.Common.Contracts;
 using ContactList.DataContexts;
 using ContactList.Models;
 using ContactList.Models.Request;
@@ -16,7 +16,7 @@ namespace ContactList.DataServices
             UserId = userId;
         }
 
-        public async Task<IEnumerable<object>> ListSelection()
+        public async Task<IEnumerable<object>> ApiList()
         {
             var contacts = await ListQuery()
                 .Select(c => new
@@ -46,7 +46,7 @@ namespace ContactList.DataServices
             return contacts;
         }
 
-        public async Task<object> DetailsSelection(int? id)
+        public async Task<object> ApiDetails(int? id)
         {
             var contact = await ListQuery()
                 .Select(c => new
@@ -113,22 +113,31 @@ namespace ContactList.DataServices
             return phones;
         }
 
-        public async Task<Contact> CreateAndSave(CreateContactRequest req)
-        {
-            Contact contact = Create(req);
-
-            _context.Add(contact);
-            await _context.SaveChangesAsync();
-
-            return contact;
-        }
-        public Contact Create(CreateContactRequest req)
+        public Contact Create(ContactRequest req)
         {
             Contact contact = new Contact();
             contact.Name = req.Name;
             contact.Email = req.Email;
             contact.OwnerId = UserId;
             contact.Phones = PreparePhoneNumbers(req.phone_number, req.phone_type);
+
+            _context.Add(contact);
+            _context.SaveChanges();
+
+            return contact;
+        }
+
+        public async Task<Contact> Edit(int? id, Contact contact, ContactRequest req)
+        {
+            contact.Name = req.Name;
+            contact.Email = req.Email;
+
+            if (req.phone_number.Length > 1)
+            {
+                contact.Phones.AddRange(PreparePhoneNumbers(req.phone_number, req.phone_type));
+            }
+
+            await _context.SaveChangesAsync();
 
             return contact;
         }
@@ -140,6 +149,41 @@ namespace ContactList.DataServices
             await _context.SaveChangesAsync();
 
             return true;
+        }
+
+        public Phone GetPhone(int? id)
+        {
+            var phone = _context.Phones
+                .Include(p => p.Contact)
+                .FirstOrDefault(p => p.Id == id);
+
+            if (phone.Contact.OwnerId != UserId)
+            {
+                throw new UnauthorizedAccessException("Forbidden");
+            }
+
+            return phone;
+        }
+
+        public async Task<bool> DeletePhone(int? id)
+        {
+            var phone = GetPhone(id);
+            _context.Phones.Remove(phone);
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<Phone> EditPhone(int? id, EditPhoneRequest req)
+        {
+            var phone = GetPhone(id);
+            phone.Number = req.Number;
+            phone.Type = (PhoneType)Enum.Parse(typeof(PhoneType), req.Type.ToString());
+
+
+            await _context.SaveChangesAsync();
+
+            return phone;
         }
     }
 }
