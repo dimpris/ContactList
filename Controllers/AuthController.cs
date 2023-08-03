@@ -35,7 +35,8 @@ namespace ContactList.Controllers
             }
             catch (InvalidCredentialsException ex)
             {
-                return Problem("Wrong credentials");
+                ModelState.AddModelError("Password", "Wrong credentials");
+                return View();
             }
             catch (Exception ex)
             {
@@ -74,6 +75,43 @@ namespace ContactList.Controllers
         {
             authManager.SignOut();
             return RedirectToAction("Login");
+        }
+
+        public IActionResult ResetPassword()
+        {
+            ViewBag.ResetCode = "";
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ResetPassword(ResetPasswordCodeRequest req)
+        {
+            var resetCode = authManager.GenerateResetPasswordCode(req.Email);
+            ViewBag.ResetCode = resetCode;
+
+            return View();
+        }
+
+        public IActionResult ConfirmResetPassword(string code)
+        {
+            var passwordReset = authManager.GetResetPasswordCode(code);
+
+            if (passwordReset == null) 
+            { 
+                return NotFound();
+            }
+
+            ViewBag.ResetCode = code;
+
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult ConfirmResetPassword(ConfirmResetPasswordRequest req)
+        {
+            authManager.ResetPassword(req);
+
+            return Redirect("/Contacts");
         }
     }
 }

@@ -10,12 +10,13 @@ namespace ContactList.DataContexts
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<Phone> Phones { get; set; } = null!;
         public DbSet<Contact> Contacts { get; set; } = null!;
+        public DbSet<PasswordReset> PasswordResets { get; set; } = null!;
         public ContactListAppContext(DbContextOptions<ContactListAppContext> options)
             : base(options)
         {
-            // Database.EnsureCreated(); // Not needed. Database structure managed by migrations
+             // Database.EnsureCreated(); // Not needed. Database structure managed by migrations
         }
-        
+
         public IQueryable<Contact> UserContacts(int userId)
         {
             return Contacts.Where(c => c.OwnerId == userId);
@@ -35,7 +36,7 @@ namespace ContactList.DataContexts
             u.Id = 1;
             u.VerifiedAt = DateTime.Now;
             u.RoleId = userRole.Id;
-            
+
             modelBuilder.Entity<User>().HasData(u);
         }
     }

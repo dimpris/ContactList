@@ -6,6 +6,7 @@ using ContactList.Models;
 using ContactList.Models.Request;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using NuGet.Protocol.Plugins;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -127,6 +128,53 @@ namespace ContactList.Common
         {
             Cookies.Delete("access_token");
             Cookies.Append("access_token", token);
+        }
+
+        public string GenerateResetPasswordCode(string email)
+        {
+            var user = DataContext.Users
+                .FirstOrDefault(u => u.Email == email && u.VerifiedAt != null);
+
+            if (user == null)
+            {
+                throw new InvalidCredentialsException();
+            }
+
+            var passwordReset = new PasswordReset()
+            {
+                OwnerId = user.Id,
+                ResetCode = Guid.NewGuid().ToString()
+            };
+
+            DataContext.PasswordResets.Add(passwordReset);
+            DataContext.SaveChanges();
+
+            // Here should e-mail sending
+
+            return passwordReset.ResetCode;
+        }
+        public PasswordReset GetResetPasswordCode(string code)
+        {
+            var passwordResetCode = DataContext.PasswordResets
+                .FirstOrDefault(r => r.ResetCode == code && r.ExpiresAt > DateTime.Now);
+
+            return passwordResetCode;
+        }
+        public void ResetPassword(ConfirmResetPasswordRequest req)
+        {
+            var passwordResetCode = DataContext.PasswordResets
+                .FirstOrDefault(r => r.ResetCode == req.Code && r.ExpiresAt > DateTime.Now);
+
+            var user = DataContext.Users.FirstOrDefault(u => u.Id == passwordResetCode.OwnerId && u.VerifiedAt != null);
+
+            PasswordHashData pass = new PasswordHashData(req.Password);
+            string hash = Hashing.HashPassword(pass);
+
+            user.PasswordHash = hash;
+            user.PasswordHashSalt = pass.Salt;
+
+            DataContext.PasswordResets.Remove(passwordResetCode);
+            DataContext.SaveChanges();
         }
     }
 }
