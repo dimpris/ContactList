@@ -6,7 +6,13 @@
         numbersCount = Model.Phones.Count;
     }
 }
-
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', () => {
+        $('[mask]').each(function (e) {
+            $(this).mask($(this).attr('mask'));
+        });
+    });
+</script>
 <div class="phone-numbers-editor container">
 
     <div class="row d-none" id="phone-number-template">
@@ -22,7 +28,7 @@
             </select>
         </div>
         <div class="col-5 editor">
-            <input type="text" name="phone_number[]" placeholder="Phone number" />
+            <input type="text" name="phone_number[]" mask="(999) 999-9999" />
         </div>
         <div class="col-1 editor">
             <button type="button" class="btn btn-secondary btn-sm remove-phone-number-btn">
@@ -49,7 +55,7 @@
                         </select>
                     </div>
                     <div class="col-5 editor">
-                        <input type="text" name="phone_number_editor" value="@p.Number" placeholder="Phone number" />
+                        <input type="text" name="phone_number_editor" value="@p.Number" mask="(999) 999-9999" />
                     </div>
                     <div class="col-1 editor">
                         <button type="button" class="btn btn-secondary btn-sm save-phone-number-btn" data-id="@p.Id">

@@ -4,8 +4,16 @@
 // Write your JavaScript code.
 $(() => { 
     initPhoneNumbersEditor();
+    initMaskedFields();
 });
 
+function initMaskedFields() {
+    if ($("*[mask]").length) {
+        $('[mask]').each(function (e) {
+            $(this).mask($(this).attr('mask'));
+        });
+    }
+}
 function initPhoneNumbersEditor() {
     const addBtn = $('#add-phone-number-btn');
     const editor = $('#phone-numbers-editor');
@@ -80,6 +88,10 @@ function addPhoneNumberRow() {
     if (rowTemplate.length) {
         let rowClone = rowTemplate.clone();
         rowClone.removeClass('d-none').addClass('edit');
+        let maskedInputs = rowClone.find('input[mask]');
+        maskedInputs.each(function (e) {
+            $(this).mask($(this).attr('mask'));
+        });
         editor.append(rowClone);
     }
 }

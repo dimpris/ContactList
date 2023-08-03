@@ -92,6 +92,22 @@ namespace ContactList.DataServices
             return _context.Contacts != null;
         }
 
+        public bool IsPhoneNumbersInvalid(string[]? phone_number)
+        {
+            if (phone_number != null && phone_number.Length > 1)
+            {
+                for (int i = 1; i < phone_number.Length; i++)
+                {
+                    if (string.IsNullOrWhiteSpace(phone_number[i]))
+                    {
+                        return true;
+                        break;
+                    }
+                }
+            }
+
+            return false;
+        }
         public List<Phone> PreparePhoneNumbers(string[]? phone_number, string[]? phone_type)
         {
             var phones = new List<Phone>();

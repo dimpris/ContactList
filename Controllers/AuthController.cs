@@ -23,6 +23,7 @@ namespace ContactList.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginRequest req)
         {
             try
@@ -47,6 +48,7 @@ namespace ContactList.Controllers
             return View();
         }
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult SignUp(SignUpRequest req)
         {
             try

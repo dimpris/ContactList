@@ -63,6 +63,11 @@ namespace ContactList.Controllers
                 Contact contact = new Contact();
                 var cs = new ContactsService(_context, GetCurrentUserId());
 
+                if (cs.IsPhoneNumbersInvalid(req.phone_number)) 
+                {
+                    ModelState.AddModelError("Phones", "Phone numbers can't be empty");
+                }
+
                 if (ModelState.IsValid)
                 {
                     contact = cs.Create(req);
@@ -95,6 +100,11 @@ namespace ContactList.Controllers
             {
                 var cs = new ContactsService(_context, GetCurrentUserId());
                 var contact = await cs.Details(id);
+
+                if (cs.IsPhoneNumbersInvalid(req.phone_number))
+                {
+                    ModelState.AddModelError("Phones", "Phone numbers can't be empty");
+                }
 
                 if (ModelState.IsValid)
                 {
