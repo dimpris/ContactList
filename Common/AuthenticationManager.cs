@@ -63,9 +63,9 @@ namespace ContactList.Common
         {
             var user = DataContext.Users
                 .Include(u => u.Role)
-                .FirstOrDefault(u => u.Login == login && u.IsActive == true);
+                .FirstOrDefault(u => u.Login == login && u.VerifiedAt != null);
             
-            if (user != null)
+            if (user == null)
             {
                 throw new InvalidCredentialsException();
             }

@@ -1,0 +1,70 @@
+﻿@model ContactList.Models.SearchResult
+
+@{
+    ViewData["Title"] = "Search results";
+    Layout = "~/Views/Layouts/_Layout.cshtml";
+}
+
+<h3>Contacts</h3>
+<hr />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+               Name
+            </th>
+            <th>
+                Email
+            </th>
+            <th>Numbers count</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Contacts)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Phones.Count)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>Phones</h3>
+<hr />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Number
+            </th>
+            <th>
+                Type
+            </th>
+            <th>Fullname</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Phones)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Number)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Contact.Name)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

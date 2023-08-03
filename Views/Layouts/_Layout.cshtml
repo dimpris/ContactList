@@ -27,7 +27,14 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Contacts" asp-action="Create">Create contact</a>
                         </li>
                     </ul>
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="SignOut">Sign Out</a>
+                    @if (Context.User.Identity.IsAuthenticated)
+                    {
+                        <form method="get" asp-controller="Search" asp-action="Index" class="d-flex" role="search">
+                            <input name="searchTerm" class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-success" type="submit"><i class="bi bi-search"></i></button>
+                        </form>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Auth" asp-action="SignOut">Sign Out</a>
+                    }
                 </div>
             </div>
         </nav>
