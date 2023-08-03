@@ -1,4 +1,5 @@
 ﻿using ContactList.Common;
+using ContactList.Common.Contracts;
 using ContactList.DataContexts;
 using ContactList.Models.Request;
 using Microsoft.AspNetCore.Mvc;

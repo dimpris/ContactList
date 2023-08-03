@@ -1,4 +1,5 @@
-﻿using ContactList.Controllers;
+﻿using ContactList.Common.Contracts;
+using ContactList.Controllers;
 using ContactList.DataContexts;
 using ContactList.DataServices;
 using ContactList.Models;

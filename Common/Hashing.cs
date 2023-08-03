@@ -1,6 +1,5 @@
-﻿using ContactList.Models;
-using System.Collections;
-using System.Security.Cryptography;
+﻿using ContactList.Common.Contracts;
+using ContactList.Models;
 
 namespace ContactList.Common
 {

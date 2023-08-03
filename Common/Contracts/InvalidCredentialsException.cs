@@ -1,4 +1,4 @@
-﻿namespace ContactList.Common
+﻿namespace ContactList.Common.Contracts
 {
     public class InvalidCredentialsException : Exception
     {
