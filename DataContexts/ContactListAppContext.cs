@@ -14,7 +14,7 @@ namespace ContactList.DataContexts
         public ContactListAppContext(DbContextOptions<ContactListAppContext> options)
             : base(options)
         {
-             // Database.EnsureCreated(); // Not needed. Database structure managed by migrations
+             Database.EnsureCreated();
         }
 
         public IQueryable<Contact> UserContacts(int userId)
