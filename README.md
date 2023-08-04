@@ -1,14 +1,13 @@
-# Contact List
 
-Application that helps managing user contacts. Solution includes ASP.NET Core (both, MVC and API) and legacy Classic ASP. Implemented custom authentication using own DB table through the Entity Framework. Authorization based on JWT tokens, with shared session between Classic ASP and ASP.NET Core components.
+Application that helps managing user contacts. Solution includes ASP.NET Core (both, MVC and API) and legacy Classic ASP. 
+Implemented custom authentication using own DB table through the Entity Framework. 
+Authorization based on JWT tokens, with shared Cookies session between Classic ASP and ASP.NET Core components.
 
-## Steps left
+App can work with the tokens transfered either in through auth headers or through cookies. 
+App includes migrations to manage th db.
+Bussines logic described in service classes to have a thin controllers.
+Common folder includes some contract files and utilities for hashing and auth process.
+App includec MVC and API Controllers, API covering Authentication and some data management enpoints.
+ClassicASP folder includes legacy pages which can access the token in cookies and request the API.
 
-
-- TODO. Finish with phone numbers edit. **1**
-- TODO. Implement contacts search. **2**
-- TODO. Add contacts validation and form masks. **2**
-- TODO. Implement password reset. **3**
-- TODO. Add CSRF security for login forms. **3**
-- TODO. Deploy on Azure or AWS. **4**
-- TODO. Cover with tests. **5**
+App deployed on [https://contactlist20230804150242.azurewebsites.net/Contacts](https://contactlist20230804150242.azurewebsites.net/Contacts)
