@@ -63,14 +63,8 @@ namespace ContactList.Common
         }
         public string? SignIn(string login, string password, bool storeToken = true)
         {
-            var user = DataContext.Users
-                .Include(u => u.Role)
-                .FirstOrDefault(u => u.Login == login && u.VerifiedAt != null);
-            
-            if (user == null)
-            {
-                throw new InvalidCredentialsException();
-            }
+            var userService = new UserService(DataContext);
+            var user = userService.GetUser(login);
 
             return SignIn(user, password, storeToken);
         }

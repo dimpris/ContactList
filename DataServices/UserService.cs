@@ -1,6 +1,9 @@
 ﻿using ContactList.Common;
+using ContactList.Common.Contracts;
 using ContactList.DataContexts;
 using ContactList.Models;
+using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol.Plugins;
 
 namespace ContactList.DataServices
 {
@@ -12,6 +15,21 @@ namespace ContactList.DataServices
         {
             _data = context;
         }
+
+        public User GetUser(string login)
+        {
+            var user = _data.Users
+            .Include(u => u.Role)
+                .FirstOrDefault(u => u.Login == login && u.VerifiedAt != null);
+
+            if (user == null)
+            {
+                throw new InvalidCredentialsException();
+            }
+
+            return user;
+        }
+
         public User CreateAndAdd(string login, string password, string fullname, string email, string role = "user")
         {
             var u = Create(login, password, fullname, email);
