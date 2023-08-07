@@ -10,4 +10,8 @@ Common folder includes some contract files and utilities for hashing and auth pr
 App includec MVC and API Controllers, API covering Authentication and some data management enpoints.
 ClassicASP folder includes legacy pages which can access the token in cookies and request the API.
 
-App deployed on [https://contactlist20230804150242.azurewebsites.net/Contacts](https://contactlist20230804150242.azurewebsites.net/Contacts)
+Tests project includes some unit test to check Sign Up, Sign In and Contact creation
+
+App deployed on [https://contactlist20230804150242.azurewebsites.net/](https://contactlist20230804150242.azurewebsites.net/)
+
+Classic ASP page deployed on [https://aspcontactlist.azurewebsites.net/](https://aspcontactlist.azurewebsites.net/)
