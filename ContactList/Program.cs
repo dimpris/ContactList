@@ -107,7 +107,7 @@ app.UseStatusCodePages(async context =>
 });
 
 app.UseCors(corsPolicyBuilder =>
-   corsPolicyBuilder.WithOrigins("http://localhost:81")
+   corsPolicyBuilder.WithOrigins("https://aspcontactlist.azurewebsites.net")
   .AllowAnyMethod()
   .AllowAnyHeader()
 );
