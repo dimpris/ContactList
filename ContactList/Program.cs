@@ -2,6 +2,7 @@ using ContactList.DataContexts;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using System.Net;
 using System.Text;
@@ -9,7 +10,7 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add DB connection
-string connection = builder.Configuration.GetConnectionString("DefaultConnection");
+string connection = builder.Configuration.GetConnectionString("DefaultConnectionAzure");
 builder.Services.AddDbContext<ContactListAppContext>(options => options.UseSqlServer(connection));
 builder.Services.AddMvc(opt => opt.EnableEndpointRouting = false);
 
@@ -24,7 +25,7 @@ builder.Services.AddAuthentication("OAuth")
             OnMessageReceived = context =>
             {
                 string token;
-                if (context.Request.Cookies.ContainsKey("access_token") && context.Request.Cookies.TryGetValue("access_token", out token))
+                if (context.Request.Cookies.ContainsKey("accessToken") && context.Request.Cookies.TryGetValue("accessToken", out token))
                 {
                     context.Token = token;
                 }
@@ -107,9 +108,10 @@ app.UseStatusCodePages(async context =>
 });
 
 app.UseCors(corsPolicyBuilder =>
-   corsPolicyBuilder.WithOrigins("https://aspcontactlist.azurewebsites.net")
-  .AllowAnyMethod()
-  .AllowAnyHeader()
+   corsPolicyBuilder
+      .AllowAnyOrigin()
+      .AllowAnyMethod()
+      .AllowAnyHeader()
 );
 
 
@@ -121,6 +123,15 @@ app.UseMvc(routes =>
 });
 
 app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions()
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), @"ClassicASP")
+    ),
+    RequestPath = new PathString("/asp"), 
+    ServeUnknownFileTypes = true,
+    DefaultContentType = "text/html"
+});
 
 app.MapControllers();
 

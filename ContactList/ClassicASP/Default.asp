@@ -17,13 +17,15 @@
     </div>
     <div class="output" style="display: none"></div>
     <script>
+        // const host = "https://localhost:7164/"; //https://contactlist20230804150242.azurewebsites.net/
+        const host = "https://contactlist20230815140706.azurewebsites.net/";
         $(function(){
             start();
 
             $("#loginBtn").click(function(){
                 $(".loginform").hide();
                 var settings = {
-                  "url": "https://contactlist20230804150242.azurewebsites.net/api/ContactList/Login",
+                  "url": host + "api/ContactList/Login",
                   "method": "POST",
                   "timeout": 0,
                   "headers": {
@@ -36,7 +38,7 @@
                 };
 
                 $.ajax(settings).done(function (response) {
-                  localStorage.setItem("token", response.access_token);
+                  localStorage.setItem("token", response.accessToken);
                   start();
                 });
             });
@@ -46,7 +48,7 @@
             var token = localStorage.getItem("token");
             if (token) {
                 var settings = {
-                  "url": "https://contactlist20230804150242.azurewebsites.net/api/ContactList",
+                  "url": host + "api/ContactList",
                   "method": "GET",
                   "timeout": 0,
                   "headers": {

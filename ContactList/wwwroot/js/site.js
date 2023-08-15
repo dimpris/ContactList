@@ -102,7 +102,7 @@ function getCookie(name) {
     if (parts.length === 2) return parts.pop().split(';').shift();
 }
 function apiQuery(url, method, onDone, data = null) {
-    const token = getCookie("access_token") || "";
+    const token = getCookie("accessToken") || "";
     var settings = {
         "url": url,
         "method": method,

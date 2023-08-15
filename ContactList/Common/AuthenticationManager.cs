@@ -4,13 +4,10 @@ using ContactList.DataContexts;
 using ContactList.DataServices;
 using ContactList.Models;
 using ContactList.Models.Request;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using NuGet.Protocol.Plugins;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using System.Xml.Linq;
 
 namespace ContactList.Common
 {
@@ -42,7 +39,8 @@ namespace ContactList.Common
 
         public void SignOut()
         {
-            Cookies.Delete("access_token");
+            Cookies.Delete("accessToken");
+            Cookies.Delete("identityInfo");
         }
 
         public string SignIn(User user, string password, bool storeToken = true)
@@ -57,6 +55,7 @@ namespace ContactList.Common
             if (storeToken)
             {
                 StoreToken(token);
+                StoreSession(user);
             }
 
             return token;
@@ -118,10 +117,21 @@ namespace ContactList.Common
 
             return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
+        
+        private void StoreSession(User u)
+        {
+            string userInfo = u.Id.ToString() + ":" + u.Fullname;
+
+            var userInfoBytes = Encoding.UTF8.GetBytes(userInfo);
+            var userInfoBase64 = Convert.ToBase64String(userInfoBytes);
+
+            Cookies.Append("identityInfo", userInfoBase64);
+        }
+
         private void StoreToken(string token) 
         {
-            Cookies.Delete("access_token");
-            Cookies.Append("access_token", token);
+            Cookies.Delete("accessToken");
+            Cookies.Append("accessToken", token);
         }
 
         public string GenerateResetPasswordCode(string email)

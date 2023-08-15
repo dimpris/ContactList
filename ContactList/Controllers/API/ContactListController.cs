@@ -76,7 +76,7 @@ namespace ContactList.Controllers.API
             {
                 var token = authManager.SignIn(req.Login, req.Password, false);
 
-                return new { access_token = token };
+                return new { accessToken = token };
 
             }
             catch (InvalidCredentialsException ex)
