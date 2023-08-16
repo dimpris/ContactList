@@ -8,10 +8,10 @@ App includes migrations to manage th db.
 Bussines logic described in service classes to have a thin controllers.
 Common folder includes some contract files and utilities for hashing and auth process.
 App includec MVC and API Controllers, API covering Authentication and some data management enpoints.
-ClassicASP folder includes legacy pages which can access the token in cookies and request the API.
+ClassicASP folder includes legacy pages which can access the token and user data stored in cookies, and than request the API or query DB.
 
 Tests project includes some unit test to check Sign Up, Sign In and Contact creation
 
-App deployed on [https://contactlist20230804150242.azurewebsites.net/](https://contactlist20230804150242.azurewebsites.net/)
+App deployed on [https://h.dimpris.pp.ua/](https://h.dimpris.pp.ua/)
 
-Classic ASP page deployed on [https://aspcontactlist.azurewebsites.net/](https://aspcontactlist.azurewebsites.net/)
+Classic ASP page can be navigated either from the navigation bar or by URL [https://h.dimpris.pp.ua/asp/Contacts.asp](https://h.dimpris.pp.ua/asp/Contacts.asp)
