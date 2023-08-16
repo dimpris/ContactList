@@ -41,7 +41,7 @@ End If
     <%
     Dim objConn
     Set objConn = Server.CreateObject("ADODB.Connection")
-    objConn.ConnectionString = "Provider=SQLOLEDB; Data Source=tcp:dima-contact-listdb-2023.database.windows.net,1433; Database=dima-contact-list; User ID=dima-contact-listdb; Password=Americ@n0"
+    objConn.ConnectionString = "Provider=SQLOLEDB; Data Source=tcp:contactlistdbserver.database.windows.net,1433; Database=ContactList_db; User ID=authcontactlist-server-admin; Password=X73U828M75H6KL2H$"
     objConn.Open
     %>
         <form>
